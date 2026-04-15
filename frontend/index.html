@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Brain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #f8fafc;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+
+        .section {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid #334155;
+        }
+
+        .section h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #cbd5e1;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #3b82f6;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #0f172a;
+            border: 1px dashed #475569;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #94a3b8;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .file-label:hover {
+            border-color: #3b82f6;
+        }
+
+        .file-label.has-file {
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        button:disabled {
+            background: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .status.success {
+            display: block;
+            background: #052e16;
+            border: 1px solid #166534;
+            color: #4ade80;
+        }
+
+        .status.error {
+            display: block;
+            background: #2d0a0a;
+            border: 1px solid #7f1d1d;
+            color: #f87171;
+        }
+
+        .status.loading {
+            display: block;
+            background: #1e1b4b;
+            border: 1px solid #3730a3;
+            color: #a5b4fc;
+        }
+
+        .answer-box {
+            margin-top: 16px;
+            display: none;
+        }
+
+        .answer-box.visible {
+            display: block;
+        }
+
+        .answer-content {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .answer-content.declined {
+            border-color: #92400e;
+            color: #fbbf24;
+        }
+
+        .confidence-bar {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .confidence-track {
+            flex: 1;
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .confidence-label {
+            font-size: 12px;
+            color: #94a3b8;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .sources {
+            margin-top: 12px;
+        }
+
+        .sources h3 {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .source-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #1e3a5f;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #93c5fd;
+            margin: 0 6px 6px 0;
+        }
+
+        .source-tag .page {
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Company Brain</h1>
+        <p class="subtitle">Ask questions about your company docs. Get grounded, cited answers.</p>
+
+        <!-- Upload Section -->
+        <div class="section">
+            <h2>Upload Document</h2>
+            <div class="form-group">
+                <label for="upload-company">Company</label>
+                <input type="text" id="upload-company" placeholder="e.g. acme-corp" value="default">
+            </div>
+            <div class="form-group">
+                <label>File (.pdf, .txt, .md)</label>
+                <label class="file-label" id="file-label" for="file-input">
+                    Choose a file...
+                </label>
+                <input type="file" id="file-input" accept=".pdf,.txt,.md">
+            </div>
+            <button id="upload-btn" onclick="uploadDocument()">Upload</button>
+            <div class="status" id="upload-status"></div>
+        </div>
+
+        <!-- Query Section -->
+        <div class="section">
+            <h2>Ask a Question</h2>
+            <div class="form-group">
+                <label for="query-company">Company</label>
+                <input type="text" id="query-company" placeholder="e.g. acme-corp" value="default">
+            </div>
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea id="question" placeholder="What is our refund policy?"></textarea>
+            </div>
+            <button id="query-btn" onclick="queryBrain()">Ask</button>
+            <div class="status" id="query-status"></div>
+
+            <div class="answer-box" id="answer-box">
+                <div class="answer-content" id="answer-content"></div>
+                <div class="confidence-bar">
+                    <div class="confidence-track">
+                        <div class="confidence-fill" id="confidence-fill"></div>
+                    </div>
+                    <span class="confidence-label" id="confidence-label"></span>
+                </div>
+                <div class="sources" id="sources-section"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        // File input label update
+        document.getElementById('file-input').addEventListener('change', function () {
+            const label = document.getElementById('file-label');
+            if (this.files.length > 0) {
+                label.textContent = this.files[0].name;
+                label.classList.add('has-file');
+            } else {
+                label.textContent = 'Choose a file...';
+                label.classList.remove('has-file');
+            }
+        });
+
+        function setStatus(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = 'status ' + type;
+        }
+
+        async function uploadDocument() {
+            const fileInput = document.getElementById('file-input');
+            const company = document.getElementById('upload-company').value.trim() || 'default';
+            const btn = document.getElementById('upload-btn');
+
+            if (!fileInput.files.length) {
+                setStatus('upload-status', 'Please select a file.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            setStatus('upload-status', 'Uploading and processing...', 'loading');
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('company', company);
+
+            try {
+                const res = await fetch(API_BASE + '/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    setStatus('upload-status', data.detail || 'Upload failed.', 'error');
+                    return;
+                }
+
+                setStatus('upload-status',
+                    `Ingested into "${data.collection}" \u2014 ${data.chunk_count} chunks created.`,
+                    'success'
+                );
+
+                // Reset file input
+                fileInput.value = '';
+                document.getElementById('file-label').textContent = 'Choose a file...';
+                document.getElementById('file-label').classList.remove('has-file');
+            } catch (err) {
+                setStatus('upload-status', 'Network error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function queryBrain() {
+            const question = document.getElementById('question').value.trim();
+            const company = document.getElementById('query-company').value.trim() || 'default';
+            const btn = document.getElementById('query-btn');
+            const answerBox = document.getElementById('answer-box');
+
+            if (!question) {
+                setStatus('query-status', 'Please enter a question.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            answerBox.classList.remove('visible');
+            setStatus('query-status', 'Searching documents...', 'loading');
+
+            try {
+                const res = await fetch(API_BASE + '/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question, company }),
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    setStatus('query-status', data.detail || 'Query failed.', 'error');
+                    return;
+                }
+
+                // Clear status
+                document.getElementById('query-status').className = 'status';
+
+                // Show answer
+                const content = document.getElementById('answer-content');
+                content.textContent = data.answer;
+                content.className = 'answer-content' + (data.declined ? ' declined' : '');
+
+                // Confidence bar
+                const pct = Math.round(data.confidence * 100);
+                const fill = document.getElementById('confidence-fill');
+                fill.style.width = pct + '%';
+                fill.style.background = data.confidence >= 0.75 ? '#22c55e'
+                    : data.confidence >= 0.5 ? '#eab308' : '#ef4444';
+                document.getElementById('confidence-label').textContent = pct + '%';
+
+                // Sources
+                const sourcesSection = document.getElementById('sources-section');
+                if (data.sources && data.sources.length > 0) {
+                    let html = '<h3>Sources</h3>';
+                    data.sources.forEach(function (s) {
+                        const page = s.page !== null && s.page !== undefined
+                            ? ' <span class="page">p.' + s.page + '</span>' : '';
+                        html += '<span class="source-tag">' + escapeHtml(s.source) + page + '</span>';
+                    });
+                    sourcesSection.innerHTML = html;
+                } else {
+                    sourcesSection.innerHTML = '';
+                }
+
+                answerBox.classList.add('visible');
+            } catch (err) {
+                setStatus('query-status', 'Network error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Allow Enter key to submit query
+        document.getElementById('question').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                queryBrain();
+            }
+        });
+    </script>
+</body>
+</html>
