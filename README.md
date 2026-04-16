@@ -1,5 +1,7 @@
 # Company Brain
 
+**Live demo:** https://web-production-5ebc5.up.railway.app
+
 An internal knowledge base that lets anyone ask a question in plain English and get a grounded, cited answer from their company's own documents.
 
 Upload PDFs, text files, or markdown. Ask questions. Get answers with source citations — or an honest "I don't know" when the documents don't contain the answer.
